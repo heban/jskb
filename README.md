@@ -1,4 +1,4 @@
 jskb
 ====
 
-Simple javascript keyboard
+Simple javascript keyboard. Demo page: http://www.pawelochota.pl/projekty/jskb/
