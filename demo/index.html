@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>jsKB - wirtualna klawiatura JavaScript</title>
+        <link rel="stylesheet" type="text/css" href="project.css" />
+        <link rel="stylesheet" type="text/css" href="../jskb.css" />
+        <script type="text/javascript" src="../jskb.js"></script>
+        <script type="text/javascript">
+        	window.onload = function () {
+        		jsKB('kb_input');
+        		jsKB('kb_area','kb_button2');
+			}
+        </script> 
+    </head>
+    <body>
+    	<div id="wrapper">
+    		<h1>jsKB - prosta wirtualna klawiatura w JavaScript</h1>
+    		<div id="main">
+    			<h2>Info</h2>
+    			<p><strong>jsKB</strong> jest wirtualną klawiaturą napisaną w języku JavaScript (bez użycia żadnego frameworka),
+    				której podłączenie sprowadza się do podania identyfikatora pola tekstowego (input oraz textarea),
+    				oraz opcjonalnego identyfikatora przycisku za pomocą którego klawiatura ma być wywoływana. Przycisk może być
+    				dowolnym elementem języka HTML. Póki co klawiatura wspiera jedynie język polski.
+    			</p>
+    			<h2>Przykład użycia</h2>
+    			<p>
+    				Pierwsze pole aktywuje klawiaturę na "focus", drugie pole wymaga kliknięcia w przycisk obok.
+    			</p>
+    			<div class="separate">
+    				<input type="text" id="kb_input" />
+    			<div class="separate">
+    				<textarea id="kb_area" rows="8" cols="30"></textarea><img src="kb.png" id="kb_button2" alt="keyboard button"/>
+    			</div>
+    			<h2>Umieszczanie klawiatury na własnej stronie WWW</h2>
+    			<p>
+    				Pliki jskb.js oraz opcjonalnie jskb.css, należy umieścić w szablonie witryny:
+    			</p>
+<pre>
+<code>
+&lt;link rel="stylesheet" type="text/css" href="jskb.css" /&gt;
+&lt;script type="text/javascript" src="jskb.js"&gt;&lt;/script&gt;
+</code>
+</pre>
+    			
+    			<p>
+    				Skrypt pobiera identyfikatory pól oraz przycisków z nimi skojarzonymi, dlatego też musi się wykonać
+    				po załadowaniu strony. W sekcji &lt;head&gt; klawiaturę można wywołać następująco:
+    			</p>
+<pre>
+<code>
+&lt;script type="text/javascript"&gt;
+window.onload = function () {
+	jsKB('id_pola','id_przycisku'); // lub jsKB('id_pola');
+}
+&lt;/script&gt;
+</code>
+</pre>
+				<p>
+					jsKB() jest funkcją, która przyjmuje identyfikator pola orac opcjonalnego przycisku i kojarzy z nimi klawiaturę.
+					Identyfikatory można podać w formie łańcuchów znaków, bądź też jako konkretne elementy pobrane jakąś
+					funkcją DOMu. Można ją zastosować do kilku pól kojarząc je z innymi przyciskami, dla przykładu:
+				</p>
+<pre>
+<code>
+&lt;script type="text/javascript"&gt;
+window.onload = function () {
+	jsKB('id_pola','id_przycisku');
+	jsKB('id_pola2');
+}
+&lt;/script&gt;
+</code>
+</pre>				
+
+    			<h2>Obsługiwane przeglądarki</h2>
+    			<p>jsKB obsługują wszystkie wersje Firefox'a, Google Chrome, Opera (testowane na 10), Safari (testowane na 4) oraz Internet Explorer od wersji 6.
+    				Ze względu na zastosowanie w domyślnym stylu nowości z CSS3, IE6, IE7 i IE8 odstają od reszty, jednakże klawiatura na nich działa i wyświetla się poprawnie.</p>
+    		</div>
+    	</div>
+    </body>
+</html>
