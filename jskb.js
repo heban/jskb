@@ -11,6 +11,11 @@ var jsKB = (function () {
 	var shift = false;
 	var alt = false;
 	
+	/**
+	 * Sprawdzenie czy podany obiekt jest funkcją.
+	 * @param {object} ob - obiekt do sprawdzenia
+	 * @return {boolean} true lub false
+	 */
 	var _isFunction = function (ob) {
 		if (typeof ob === 'function') {
 			return true;
@@ -18,6 +23,9 @@ var jsKB = (function () {
 		return false;
 	};
 	
+	/**
+	 * Dodawanie zdarzeń, polyfill dla wielu przeglądarek.
+	 */
 	var _addEvent = (function () {
 		var _event;
 		if (_isFunction(window.addEventListener)) {
@@ -36,6 +44,9 @@ var jsKB = (function () {
 		return _event;
 	}());
 	
+	/**
+	 * Usuwanie zdarzeń, polyfill dla wielu przeglądarek.
+	 */
 	var _removeEvent = (function () {
 		var _event;
 		if (_isFunction(window.removeEventListener)) {
@@ -54,6 +65,11 @@ var jsKB = (function () {
 		return _event;
 	}());
 	
+	/**
+	 * Mapa klawiszy.
+	 * Tablice jedno-elementowe to klawisze specjalne, dwu-elementowe zawierają znak podstawowy oraz ten sam przy wciśniętym shifcie.
+	 * Cztero-elementowe to odpowiednio znak podstawowy wraz z jego wersją dla shiftu, oraz podobna para z użyciem alta (klawisze specjalne).
+	 */
 	var layout = [
       ['`','~'],['1','!'],['2','@'],['3','#'],['4','$'],['5','%'],['6','^'],['7','&'],['8','*'],['9','('],['0',')'],['-','_'],['+','='],['BackSp'],
       ['Tab'],['q','Q'],['w','W'],['e','E','ę','Ę'],['r','R'],['t','T'],['y','Y'],['u','U'],['i','I'],['o','O','ó','Ó'],['p','P'],['[','{'],[']','}'],['\\','|'],
@@ -62,6 +78,10 @@ var jsKB = (function () {
       ['Space'],['Alt']
     ];
 	
+	/**
+	 * Ukrywanie bądź pokazywanie klawiatury. 
+	 * @param {object} _input - element html inputa
+	 */
 	var _toggleKb = function (_input) {
 		input = _input;
 		if (kb.style.display == 'none') {
@@ -71,27 +91,35 @@ var jsKB = (function () {
 		}
 	};
 	
+	/**
+	 * Ukrywanie klawiatury.
+	 */
 	var _hideKb = function () {
 		kb.style.display = 'none';
 		input.blur();
 	};
 	
+	/**
+	 * Pokazywanie klawiatury.
+	 * @param {object} _input - element html inputa
+	 */
 	var _showKb = function (_input) {
 		input = _input;
 		kb.style.display = 'block';
 	};
 	
+	/**
+	 * Czyszczenie pola tekstowego.
+	 */
 	var clearKb = function () {
 		input.value = '';
 		input.focus();
 	};
 	
-	var closureTemp = function (elem,tab) {
-		return function() {
-			pressKey(elem,tab);
-		}
-	};
-	
+	/**
+	 * Zmiana styli klawiszy, gdy któryś z klawiszy specjalnych jest włączony.
+	 * @param {string} name - nazwa klawisza specjalnego (alt_caps_on, caps_on, alt_on, caps_off)
+	 */
 	var modifyClass = function (name) {
 		var divs = plane.getElementsByTagName('div');
 		for (var i=0; i < divs.length; i++) {
@@ -149,6 +177,10 @@ var jsKB = (function () {
 		}
 	};
 	
+	/**
+	 * Generowanie klawiszy na podstawie tablicy layout, 
+	 * ustawianie klas dla klawiszy specjalnych, podłączanie zdarzeń zmiany kursora (do przerobienia, to niewydajne).
+	 */
 	var generateKeys = function () {
 		for (var i=0; i < layout.length; i++) {
 		  var key = document.createElement('div');
@@ -203,6 +235,9 @@ var jsKB = (function () {
 		plane.appendChild(clearb);
 	};
 	
+	/**
+	 * Dodaje zdarzenie click dla klawiszy na klawiaturze. (Do zmiany, lepsza będzie delegacja).
+	 */
 	var addEvents = function () {
 		var divs = plane.getElementsByTagName('div');
 		for (var i=0; i < layout.length; i++) {
@@ -210,7 +245,19 @@ var jsKB = (function () {
 		}
 		clear.onclick = clearKb;
 	};
-
+	
+	/**
+	 * Funkcja pomocnicza przy dodawaniu zdarzeń klawiszy w pętli.
+	 */
+	var closureTemp = function (elem,tab) {
+		return function() {
+			pressKey(elem,tab);
+		}
+	};
+	
+	/**
+	 * Zmienia kursor myszy przy wskazaniu klawisza.
+	 */
 	var changeCursor = function (elem) {
 		if (elem.style.cursor == 'pointer') {
 			elem.style.cursor = 'default';
@@ -219,6 +266,9 @@ var jsKB = (function () {
 		}
 	};
 	
+	/**
+	 * Dodaje dodatkowe elementy html do klawiszy.
+	 */
 	var addSubKey = function (key,elemArray,_class) {
 		if (typeof elemArray !== 'undefined') {
 		  var keyc = document.createElement('span');
@@ -229,6 +279,9 @@ var jsKB = (function () {
 		}
 	};
 	
+	/**
+	 * Odświeża klasy dla klawiszy klawiatury na podstawie ustawionych flag.
+	 */
 	var refreshClass = function () {
 		if (shift && alt) {
 			modifyClass('alt_caps_on');
@@ -241,6 +294,9 @@ var jsKB = (function () {
 		}
 	};
 	
+	/**
+	 * Emulacja zachowania klawisza backspace.
+	 */
 	var backspace = function () {
 		if (document.selection && (input.type != 'text')) {
 			input.focus();
@@ -265,6 +321,10 @@ var jsKB = (function () {
 		}
 	};
 	
+	/**
+	 * Wprowadza tekst do pola tekstowego.
+	 * @param {string} textinp - tekst do wprowadzenia.
+	 */
 	var insertText = function (textinp) {
 		if (document.selection && (input.type != 'text')) {
 			input.focus();
@@ -284,6 +344,11 @@ var jsKB = (function () {
 		}
 	};
 
+	/**
+	 * Funkcja uruchamiana w momencie kliknięcia w dany klawisz na klawiaturze.
+	 * Sprawdza czy ma do czynienia z klawiszem specjalnym lub normalnym, w przypadku
+	 * tego drugiego uruchamia funkcję do wprowadzania tekstu.
+	 */
 	var pressKey = function (element,tab) {
 		var chars = '';
 		if ((element.className == 'KB_caps') || (element.className == 'KB_shift')) {
@@ -327,6 +392,9 @@ var jsKB = (function () {
 		}
 	};
 	
+	/**
+	 * Funkcja generująca niezmienne elementy klawiatury (główne kontenery, przycisk clear itp.).
+	 */
 	var generateKB = function () {
 		kb = document.createElement('div');
 		kb.style.display = "none";
@@ -356,6 +424,9 @@ var jsKB = (function () {
 		plane.appendChild(info);
 	};
 	
+	/**
+	 * Funkcja generująca klawiaturę (jeden element dla wszystkich instancji).
+	 */
 	var keyboard = function () {
 		if (!document.getElementById('jsKB')) {
 			generateKB();
@@ -367,6 +438,11 @@ var jsKB = (function () {
 		}	
 	};
 	
+	/**
+	 * Konstruktor instancji klawiatury, wiąże input ze zdarzeniami.
+	 * @param {object} _input - string lub element html, input/textarea dla klawiatury
+	 * @param {object} _button - string lub element html, opcjonalny element do wywoływania klawiatury
+	 */
 	var _jsKB = function (_input, _button) {
 		if (typeof _input !== 'string') {
 			var input = _input;
@@ -380,7 +456,6 @@ var jsKB = (function () {
 			} else {
 				var button = document.getElementById(_button);
 			}
-			
 			_removeEvent(button, "click", function () {_toggleKb(input)});
 			_addEvent(button, "click", function () {_toggleKb(input)});
 		} else {
@@ -391,12 +466,19 @@ var jsKB = (function () {
 		addEvents();
 	};
 	
+	/**
+	 * Metody użyteczne dla wszystkich instancji
+	 */
 	_jsKB.prototype = {
 		toggleKeyBoard : _toggleKb,
 		showKeyBoard : _showKb,
 		hideKeyBoard : _hideKb
 	};
 	
+	/**
+	 * Funkcja główna, łącząca input z pozostałymi mechanizmami.
+	 * @return {object} - instancja klawiatury (do przyszłych zastosowań)
+	 */
 	return function (_input,_button) {
 		keyboard();
 		return new _jsKB(_input, _button);
